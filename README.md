@@ -1,4 +1,4 @@
-# TypeClone
+# TypeSync
 
 **AI-native long-form document editor** with real-time CRDT collaboration, offline-first sync, and inline AI writing assistance.
 
@@ -63,7 +63,7 @@ graph TB
 ## Project Structure
 
 ```
-typeclone/
+typesync/
 ├── frontend/                    # React 19 + Vite + TypeScript
 │   ├── src/
 │   │   ├── components/
@@ -199,7 +199,7 @@ npm run build
 
 Set environment variables:
 - `MONGODB_URI=mongodb+srv://...` (MongoDB Atlas)
-- `MONGODB_DB=typeclone`
+- `MONGODB_DB=typesync`
 - `OPENAI_API_KEY=sk-...`
 - `PORT=4321`
 
@@ -210,7 +210,7 @@ Set environment variables:
 
 ## Loom Video Script (60 seconds)
 
-> "This is TypeClone — an AI-native document editor I built to demonstrate the exact skills Type.ai is looking for.
+> "This is TypeSync — an AI-native document editor I built to demonstrate the exact skills Type.ai is looking for.
 >
 > First, real-time collaboration — I'm opening the same document in two tabs. Watch as I type here and it appears instantly. Live cursors show exactly where each person is writing.
 >

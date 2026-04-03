@@ -1,5 +1,5 @@
 {
-  "name": "typeclone-frontend",
+  "name": "typesync-frontend",
   "version": "1.0.0",
   "private": true,
   "type": "module",
@@ -43,6 +43,7 @@
     "@tiptap/pm": "^3.22.1",
     "@tiptap/react": "^3.22.1",
     "@tiptap/starter-kit": "^3.22.1",
+    "@tiptap/y-tiptap": "^3.0.2",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "idb": "^8.0.2",

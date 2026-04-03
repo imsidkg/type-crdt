@@ -25,7 +25,9 @@ export function getUserColor(index: number): string {
 }
 
 export function createYDoc(): Y.Doc {
-  return new Y.Doc()
+  // gc: false retains deleted item structs so cross-session undo
+  // can reference them by (clientID, clock) after page reload.
+  return new Y.Doc({ gc: false })
 }
 
 export function createOfflineProvider(doc: Y.Doc, roomName: string): IndexeddbPersistence {

@@ -1,5 +1,5 @@
 {
-  "name": "typeclone",
+  "name": "typesync",
   "version": "1.0.0",
   "private": true,
   "description": "AI-native long-form document editor with CRDT multiplayer, offline-first, and inline AI",

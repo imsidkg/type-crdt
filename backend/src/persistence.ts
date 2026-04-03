@@ -24,7 +24,7 @@ async function getDb(): Promise<Db | null> {
   if (!mongoAvailable) return null
 
   const uri = process.env.MONGODB_URI || 'mongodb://localhost:27017'
-  const dbName = process.env.MONGODB_DB || 'typeclone'
+  const dbName = process.env.MONGODB_DB || 'typesync'
 
   try {
     const client = new MongoClient(uri)

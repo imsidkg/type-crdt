@@ -1,5 +1,6 @@
-import { useCurrentEditor } from '@tiptap/react'
+import type { Editor } from '@tiptap/react'
 import { cn } from '@/lib/utils'
+import type { UndoState } from '@/hooks/useEditorWithCollaboration'
 import {
   Bold,
   Italic,
@@ -50,9 +51,7 @@ function ToolbarSeparator() {
   return <div className="mx-1 h-6 w-px bg-border" />
 }
 
-export function Toolbar() {
-  const { editor } = useCurrentEditor()
-
+export function Toolbar({ editor, undoState }: { editor: Editor | null; undoState?: UndoState }) {
   if (!editor) return null
 
   const actions = [
@@ -195,20 +194,34 @@ export function Toolbar() {
       <ToolbarSeparator />
 
       <div className="flex items-center gap-0.5">
-        <ToolbarButton
-          onClick={() => editor.chain().focus().undo().run()}
-          disabled={!editor.can().undo()}
-          tooltip="Undo (⌘Z)"
-        >
-          <Undo className="h-4 w-4" />
-        </ToolbarButton>
-        <ToolbarButton
-          onClick={() => editor.chain().focus().redo().run()}
-          disabled={!editor.can().redo()}
-          tooltip="Redo (⌘⇧Z)"
-        >
-          <Redo className="h-4 w-4" />
-        </ToolbarButton>
+        <div className="relative">
+          <ToolbarButton
+            onClick={() => editor.chain().focus().undo().run()}
+            disabled={undoState ? undoState.undoCount === 0 : !editor.can().undo()}
+            tooltip="Undo my changes (⌘Z)"
+          >
+            <Undo className="h-4 w-4" />
+          </ToolbarButton>
+          {undoState && undoState.undoCount > 0 && (
+            <span className="absolute -top-1 -right-1 flex h-3.5 min-w-3.5 items-center justify-center rounded-full bg-primary px-0.5 text-[9px] font-medium text-primary-foreground">
+              {undoState.undoCount}
+            </span>
+          )}
+        </div>
+        <div className="relative">
+          <ToolbarButton
+            onClick={() => editor.chain().focus().redo().run()}
+            disabled={undoState ? undoState.redoCount === 0 : !editor.can().redo()}
+            tooltip="Redo my changes (⌘⇧Z)"
+          >
+            <Redo className="h-4 w-4" />
+          </ToolbarButton>
+          {undoState && undoState.redoCount > 0 && (
+            <span className="absolute -top-1 -right-1 flex h-3.5 min-w-3.5 items-center justify-center rounded-full bg-primary px-0.5 text-[9px] font-medium text-primary-foreground">
+              {undoState.redoCount}
+            </span>
+          )}
+        </div>
       </div>
     </div>
   )

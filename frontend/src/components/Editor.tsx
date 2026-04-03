@@ -15,20 +15,28 @@ function getRoomFromUrl(): string {
 }
 
 function getOrCreateUserId(): string {
-  let id = localStorage.getItem('typeclone-user-id')
+  let id = localStorage.getItem('typesync-user-id')
   if (!id) {
     id = `user-${Math.random().toString(36).substring(2, 10)}`
-    localStorage.setItem('typeclone-user-id', id)
+    localStorage.setItem('typesync-user-id', id)
   }
   return id
 }
 
-export function Editor({ userName }: { userName?: string }) {
-  const room = useMemo(() => getRoomFromUrl(), [])
+export function Editor({ userName, room: roomProp }: { userName?: string; room?: string }) {
+  const room = useMemo(() => roomProp || getRoomFromUrl(), [roomProp])
+  // Sync room to URL so it's shareable
+  useEffect(() => {
+    const url = new URL(window.location.href)
+    if (url.searchParams.get('room') !== room) {
+      url.searchParams.set('room', room)
+      window.history.replaceState({}, '', url.toString())
+    }
+  }, [room])
   const userId = useMemo(() => getOrCreateUserId(), [])
   const displayName = userName || `User ${userId.slice(-4)}`
   const [darkMode, setDarkMode] = useState(() => {
-    const stored = localStorage.getItem('typeclone-dark-mode')
+    const stored = localStorage.getItem('typesync-dark-mode')
     if (stored !== null) return stored === 'true'
     return window.matchMedia('(prefers-color-scheme: dark)').matches
   })
@@ -45,7 +53,7 @@ export function Editor({ userName }: { userName?: string }) {
     [userId, displayName]
   )
 
-  const { editor, status, peers } = useEditorWithCollaboration({
+  const { editor, status, peers, undoState } = useEditorWithCollaboration({
     room,
     user,
   })
@@ -56,7 +64,7 @@ export function Editor({ userName }: { userName?: string }) {
     } else {
       document.documentElement.classList.remove('dark')
     }
-    localStorage.setItem('typeclone-dark-mode', String(darkMode))
+    localStorage.setItem('typesync-dark-mode', String(darkMode))
   }, [darkMode])
 
   useEffect(() => {
@@ -92,7 +100,7 @@ export function Editor({ userName }: { userName?: string }) {
     <div className="flex h-screen flex-col bg-background">
       <header className="flex items-center justify-between border-b px-4 py-2">
         <div className="flex items-center gap-3">
-          <h1 className="text-lg font-semibold tracking-tight">TypeClone</h1>
+          <h1 className="text-lg font-semibold tracking-tight">TypeSync</h1>
           <span className="text-xs text-muted-foreground">
             {room}
           </span>
@@ -122,7 +130,7 @@ export function Editor({ userName }: { userName?: string }) {
         </div>
       </header>
 
-      <Toolbar />
+      <Toolbar editor={editor} undoState={undoState} />
 
       <div className="flex flex-1 overflow-hidden">
         <div className="flex-1 overflow-y-auto">
@@ -152,7 +160,7 @@ export function Editor({ userName }: { userName?: string }) {
       </div>
 
       <footer className="border-t px-4 py-2">
-        <StatusBar status={status} peers={peers} wordCount={wordCount} />
+        <StatusBar status={status} peers={peers} wordCount={wordCount} undoState={undoState} />
       </footer>
 
       <EditorContent editor={editor} />

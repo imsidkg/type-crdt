@@ -10,8 +10,8 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.ico', 'apple-touch-icon.png'],
       manifest: {
-        name: 'TypeClone',
-        short_name: 'TypeClone',
+        name: 'TypeSync',
+        short_name: 'TypeSync',
         description: 'AI-native long-form document editor',
         theme_color: '#0a0a0a',
         background_color: '#0a0a0a',

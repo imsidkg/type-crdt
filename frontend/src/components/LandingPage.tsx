@@ -20,7 +20,7 @@ export function LandingPage({ onJoin }: { onJoin: (room: string, name: string) =
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold tracking-tight mb-2">TypeClone</h1>
+          <h1 className="text-3xl font-bold tracking-tight mb-2">TypeSync</h1>
           <p className="text-muted-foreground">
             AI-native document editor with real-time collaboration
           </p>

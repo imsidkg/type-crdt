@@ -52,6 +52,7 @@ export function getEditorExtensions(
     StarterKit.configure({
       underline: false,
       link: false,
+      undoRedo: false,
     }),
     Collaboration.configure({
       document: ydoc,
