@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:7
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongodb_data:/data/db
+    environment:
+      MONGO_INITDB_DATABASE: typeclone
+
+  backend:
+    build: ./backend
+    ports:
+      - '4321:4321'
+    environment:
+      MONGODB_URI: mongodb://mongodb:27017
+      MONGODB_DB: typeclone
+      PORT: 4321
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-sk-demo-key}
+    depends_on:
+      - mongodb
+
+  frontend:
+    build: ./frontend
+    ports:
+      - '5173:5173'
+    environment:
+      VITE_API_URL: /api
+      VITE_WS_URL: ws://localhost:4321
+    depends_on:
+      - backend
+
+volumes:
+  mongodb_data:
