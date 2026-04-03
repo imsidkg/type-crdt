@@ -1,15 +1,15 @@
 import { useState, useCallback, useEffect, useRef } from 'react'
-import { useCurrentEditor } from '@tiptap/react'
+import type { Editor } from '@tiptap/react'
 import { SlashMenu, useSlashCommand } from './SlashMenu'
 import { AIPreviewPane } from './AIPreviewPane'
 import { useAI } from '@/hooks/useAI'
 
-export function EditorContent() {
-  const { editor } = useCurrentEditor()
+export function EditorContent({ editor }: { editor: Editor | null }) {
   const [pendingResponse, setPendingResponse] = useState('')
   const [selectedText, setSelectedText] = useState('')
   const [previewPosition, setPreviewPosition] = useState<{ x: number; y: number } | null>(null)
   const [currentAction, setCurrentAction] = useState('rewrite')
+  const selectionRef = useRef<{ from: number; to: number } | null>(null)
   const responseRef = useRef('')
 
   const { isStreaming, currentResponse, stream, stop } = useAI()
@@ -29,6 +29,7 @@ export function EditorContent() {
 
       setSelectedText(text)
       setCurrentAction(command.value)
+      selectionRef.current = empty ? null : { from, to }
 
       const coords = editor.view.coordsAtPos(from)
       setPreviewPosition({ x: coords.left, y: coords.bottom + 8 })
@@ -57,20 +58,21 @@ export function EditorContent() {
   const handleApply = useCallback(() => {
     if (!editor || !pendingResponse) return
 
-    const { from, to } = editor.state.selection
-    if (from === to) {
-      editor.commands.insertContent(pendingResponse)
+    const saved = selectionRef.current
+    if (saved) {
+      editor.chain().focus().setTextSelection(saved).deleteSelection().insertContent(pendingResponse).run()
     } else {
-      editor.commands.deleteSelection()
       editor.commands.insertContent(pendingResponse)
     }
 
+    selectionRef.current = null
     setPendingResponse('')
     setSelectedText('')
     setPreviewPosition(null)
   }, [editor, pendingResponse])
 
   const handleReject = useCallback(() => {
+    selectionRef.current = null
     setPendingResponse('')
     setSelectedText('')
     setPreviewPosition(null)
@@ -78,6 +80,7 @@ export function EditorContent() {
   }, [stop])
 
   const handleClose = useCallback(() => {
+    selectionRef.current = null
     setPendingResponse('')
     setSelectedText('')
     setPreviewPosition(null)
@@ -117,13 +120,16 @@ export function EditorContent() {
 
   return (
     <>
-      <SlashMenu
-        onSelect={slashCommand.handleSelect}
-        onClose={slashCommand.close}
-        selectedIndex={slashCommand.state.selectedIndex}
-        onIndexChange={slashCommand.setIndex}
-        query={slashCommand.state.query}
-      />
+      {slashCommand.state.active && (
+        <SlashMenu
+          onSelect={slashCommand.handleSelect}
+          onClose={slashCommand.close}
+          selectedIndex={slashCommand.state.selectedIndex}
+          onIndexChange={slashCommand.setIndex}
+          query={slashCommand.state.query}
+          position={{ x: slashCommand.state.x, y: slashCommand.state.y }}
+        />
+      )}
 
       <AIPreviewPane
         isOpen={!!previewPosition}

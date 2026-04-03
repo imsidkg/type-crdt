@@ -1,3 +1,4 @@
+import 'dotenv/config'
 import type { Express } from 'express'
 import express from 'express'
 import cors from 'cors'
@@ -5,9 +6,6 @@ import { Server as HocuspocusServer } from '@hocuspocus/server'
 import { Database } from '@hocuspocus/extension-database'
 import { databaseConfig } from './persistence.js'
 import routes from './routes.js'
-import dotenv from 'dotenv'
-
-dotenv.config()
 
 const app: Express = express()
 

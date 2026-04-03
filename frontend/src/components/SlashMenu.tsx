@@ -15,9 +15,10 @@ interface SlashMenuProps {
   selectedIndex: number
   onIndexChange: (index: number) => void
   query: string
+  position?: { x: number; y: number }
 }
 
-export function SlashMenu({ onSelect, onClose, selectedIndex, onIndexChange, query }: SlashMenuProps) {
+export function SlashMenu({ onSelect, onClose, selectedIndex, onIndexChange, query, position }: SlashMenuProps) {
   const menuRef = useRef<HTMLDivElement>(null)
 
   const filteredCommands = AI_COMMANDS.filter(
@@ -62,7 +63,7 @@ export function SlashMenu({ onSelect, onClose, selectedIndex, onIndexChange, que
     <div
       ref={menuRef}
       className="fixed z-50 w-72 rounded-xl border bg-popover p-1 shadow-lg animate-fade-in"
-      style={{ maxHeight: '320px', overflowY: 'auto' }}
+      style={{ maxHeight: '320px', overflowY: 'auto', left: position?.x, top: position?.y }}
     >
       <div className="px-2 py-1.5 text-xs font-medium text-muted-foreground">AI Commands</div>
       {filteredCommands.map((command, index) => (

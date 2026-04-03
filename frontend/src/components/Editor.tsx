@@ -155,7 +155,7 @@ export function Editor({ userName }: { userName?: string }) {
         <StatusBar status={status} peers={peers} wordCount={wordCount} />
       </footer>
 
-      <EditorContent />
+      <EditorContent editor={editor} />
     </div>
   )
 }
